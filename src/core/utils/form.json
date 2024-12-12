@@ -1,0 +1,27 @@
+[
+    {
+        "name": "Order_form_1",
+        "fields": {
+            "order_date": "date",
+            "phone": "phone",
+            "lead_email": "email",
+            "text": "text"
+        }
+    },
+    {
+        "name": "Order_form_2",
+        "fields": {
+            "date_registry": "date",
+            "phone": "phone",
+            "working_email": "email"
+        }
+    },
+    {
+        "name": "Order_form_3",
+        "fields": {
+            "date": "date",
+            "phone_number": "phone",
+            "email": "email"
+        }
+    }
+]

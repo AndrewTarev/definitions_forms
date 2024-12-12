@@ -1,0 +1,39 @@
+services:
+  mongodb:
+    image: mongo:6
+    container_name: mongodb
+    restart: unless-stopped
+    command: mongod --auth
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB_NAME}
+      MONGODB_DATA_DIR: /data/db
+      MONDODB_LOG_DIR: /dev/null
+    ports:
+      - '27017:27017'
+    volumes:
+      - ./mongodbdata:/data/db
+    networks:
+      - my_network
+
+
+  backend:
+    build:
+      dockerfile: Dockerfile
+    stop_signal: SIGKILL
+    env_file:
+      - .env
+    container_name: analyze_templates
+    ports:
+      - "8000:8000"
+    command: ["/app/docker-entrypoint.sh"]
+    depends_on:
+      - mongodb
+    networks:
+      - my_network
+
+
+networks:
+  my_network:
+    driver: bridge
