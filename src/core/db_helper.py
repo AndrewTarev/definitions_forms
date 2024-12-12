@@ -2,9 +2,10 @@ import asyncio
 
 from motor.motor_asyncio import (
     AsyncIOMotorClient,
-    AsyncIOMotorDatabase,
     AsyncIOMotorCollection,
+    AsyncIOMotorDatabase,
 )
+
 from src.core.config import settings
 from src.core.utils.logging_config import my_logger
 
