@@ -9,7 +9,7 @@ from src.core.db_helper import db_helper
 from src.core.utils.logging_config import my_logger
 
 
-async def insert_documents():
+async def insert_documents() -> None:
     """Записывет шаблоны в БД"""
     try:
         await db_helper.connect_mongo()
@@ -30,7 +30,7 @@ async def insert_documents():
             )
     except errors.BulkWriteError:
         # Обработка ошибок вставки из-за нарушения уникальности
-        my_logger.info(f"Template forms already exists")
+        my_logger.info("Template forms already exists")
 
     except Exception as e:
         my_logger.error(f"An error occurred: {e}")

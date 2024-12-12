@@ -3,7 +3,6 @@ from typing import AsyncIterator
 
 import uvicorn
 from fastapi import FastAPI, Request
-
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.responses import JSONResponse
 

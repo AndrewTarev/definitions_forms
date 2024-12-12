@@ -1,18 +1,18 @@
 from typing import AsyncGenerator
 
 import pytest_asyncio
-from httpx import AsyncClient, ASGITransport
+from httpx import ASGITransport, AsyncClient
 from mongomock_motor import AsyncMongoMockClient
+from tests.mongo_client import MongoClient
 
 from src.core.config import settings
 from src.main import app
-from tests.mongo_client import MongoClient
 
 test_db_client = AsyncMongoMockClient()
 
 
 @pytest_asyncio.fixture(scope="session", autouse=True)
-async def mongo_client() -> MongoClient:
+async def mongo_client() -> AsyncGenerator[MongoClient, None]:
     async with MongoClient(
         db_name=settings.mongoDB.test_name,
         collection_name=settings.mongoDB.test_collection,

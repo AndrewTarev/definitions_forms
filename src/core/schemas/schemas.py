@@ -3,7 +3,6 @@ from typing import Dict
 
 from pydantic import BaseModel, field_validator
 
-
 # Регулярные выражения для определения типа данных
 EMAIL_REGEX = r"^[\w\.-]+@[\w\.-]+\.\w+$"
 PHONE_REGEX_W_SPACE = r"^\+7 \d{3} \d{3} \d{2} \d{2}$"
@@ -28,9 +27,9 @@ def infer_field_type(value: str) -> str:
 class FormData(BaseModel):
     """Модель шаблона формы."""
 
-    form_data: Dict[str, str]
+    data_form: Dict[str, str]
 
-    @field_validator("form_data", mode="before")
+    @field_validator("data_form", mode="before")
     @classmethod
     def validate_phone_num(cls, v: Dict[str, str]) -> Dict[str, str]:
         form_type = dict()

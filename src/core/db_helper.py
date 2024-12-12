@@ -1,13 +1,17 @@
 import asyncio
+from typing import Any, Mapping
 
-from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
-
+from motor.motor_asyncio import (
+    AsyncIOMotorClient,
+    AsyncIOMotorDatabase,
+    AsyncIOMotorCollection,
+)
 from src.core.config import settings
 from src.core.utils.logging_config import my_logger
 
 
 class DatabaseHelper:
-    db_client: AsyncIOMotorClient = None
+    db_client: AsyncIOMotorClient
 
     def __init__(
         self,
@@ -23,7 +27,7 @@ class DatabaseHelper:
         self.maxPoolSize = maxPoolSize
         self.minPoolSize = minPoolSize
 
-    async def get_db(self):
+    async def get_db(self) -> AsyncIOMotorCollection | AsyncIOMotorDatabase:
         if settings.mongoDB.testing:
             # тестовая БД
             from tests.conftest import test_db_client
@@ -52,7 +56,6 @@ class DatabaseHelper:
             my_logger.warning("Connection is None, nothing to close.")
             return
         self.db_client.close()
-        self.db_client = None
         my_logger.info("Mongo connection closed.")
 
 
