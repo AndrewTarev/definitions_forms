@@ -29,7 +29,6 @@ async def http_exception_handler(
     return JSONResponse(
         status_code=exc.status_code,
         content={
-            "error_type": exc.status_code,
             "error_message": exc.detail,
         },
     )
