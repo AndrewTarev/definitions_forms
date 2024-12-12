@@ -1,10 +1,10 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from src.core.db_helper import db_helper
-from src.core.schemas.schemas import FormData
+from src.core.schemas.schemas import FormData, ResponseData
 from src.core.utils.logging_config import my_logger
 from src.core.utils.utils import data_without_a_template, matching_template
 
@@ -13,21 +13,12 @@ router = APIRouter(
 )
 
 
-@router.post(
-    "/get_form",
-)
+@router.post("/get_form", response_model=ResponseData)
 async def get_form(
-    form_data: Request,
+    data: FormData,
     db: AsyncIOMotorClient = Depends(db_helper.get_db),
-) -> dict[str, str]:
+) -> dict[str, dict[str, str] | None] | dict[str, dict[str, str]]:
     """Определяет шаблон для переданных данных формы."""
-    try:
-        data = await form_data.form()
-        valid_data = FormData(data_form=data)  # type: ignore
-    except Exception as e:
-        my_logger.error(e)
-        raise HTTPException(status_code=400, detail="Invalid form data")
-
     try:
         # Получаем наши шаблоны из MongoDB
         templates_cursor = await db.find().to_list(length=None)  # type: ignore
@@ -39,6 +30,7 @@ async def get_form(
         my_logger.error(e)
         raise HTTPException(status_code=400, detail="Invalid connection to mongodb")
 
-    if template_name := matching_template(templates, valid_data.data_form):
-        return template_name
-    return data_without_a_template(valid_data.data_form)
+    if template_name := matching_template(templates, data.data_form):
+        return {"response": template_name}
+    data_type = data_without_a_template(data.data_form)
+    return {"response": data_type}

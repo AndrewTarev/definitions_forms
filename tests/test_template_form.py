@@ -12,11 +12,11 @@ async def test_type_validation(ac: AsyncClient) -> None:
         "Date2": "1996-12-07",
         "Some_text": "some_text",
     }
-    response = await ac.post("/get_form", data=data)
+    response = await ac.post("/get_form", json={"data_form": data})
     data = response.json()
 
     assert response.status_code == 200
-    assert data == {
+    assert data["response"] == {
         "f_name1": "phone",
         "f_name2": "phone",
         "f_name3": "email",
@@ -28,25 +28,11 @@ async def test_type_validation(ac: AsyncClient) -> None:
 
 @pytest.mark.asyncio
 async def test_type_invalid(ac: AsyncClient) -> None:
-    data = {
-        "PhoneNumber1": "+7 123 456",
-        "PhoneNumber2": "81234567890",
-        "Email": "some_mailmail.ru",
-        "Date1": "07-12-1996",
-        "Some_text": 89004030700,
-    }
+    data = {324234: 3232}
 
-    response = await ac.post("/get_form", data=data)
-    data = response.json()
+    response = await ac.post("/get_form", json={"data_form": data})
 
-    assert response.status_code == 200
-    assert data == {
-        "f_name1": "text",
-        "f_name2": "text",
-        "f_name3": "text",
-        "f_name4": "text",
-        "f_name5": "text",
-    }
+    assert response.status_code == 422
 
 
 @pytest.mark.asyncio
@@ -58,11 +44,11 @@ async def test_find_first_template(ac: AsyncClient) -> None:
         "text": "where_detonator?",
     }
 
-    response = await ac.post("/get_form", data=order_form_1)
+    response = await ac.post("/get_form", json={"data_form": order_form_1})
     data = response.json()
 
     assert response.status_code == 200
-    assert data == {"template_name1": "Order_form_1"}
+    assert data["response"] == {"template_name1": "Order_form_1"}
 
 
 @pytest.mark.asyncio
@@ -73,11 +59,11 @@ async def test_find_second_template(ac: AsyncClient) -> None:
         "working_email": "some_mail@mail.ru",
     }
 
-    response = await ac.post("/get_form", data=order_form_2)
+    response = await ac.post("/get_form", json={"data_form": order_form_2})
     data = response.json()
 
     assert response.status_code == 200
-    assert data == {"template_name1": "Order_form_2"}
+    assert data["response"] == {"template_name1": "Order_form_2"}
 
 
 @pytest.mark.asyncio
@@ -88,11 +74,11 @@ async def test_find_third_template(ac: AsyncClient) -> None:
         "email": "some_mail@mail.ru",
     }
 
-    response = await ac.post("/get_form", data=order_form_3)
+    response = await ac.post("/get_form", json={"data_form": order_form_3})
     data = response.json()
 
     assert response.status_code == 200
-    assert data == {"template_name1": "Order_form_3"}
+    assert data["response"] == {"template_name1": "Order_form_3"}
 
 
 @pytest.mark.asyncio
@@ -102,13 +88,13 @@ async def test_find_template_with_any_params(ac: AsyncClient) -> None:
         "phone_number": "+7 123 456 78 90",
         "email": "some_mail@mail.ru",
         "somthing_else": "some_text",
-        1: "where_detonator?",
+        "1": "where_detonator?",
     }
-    response = await ac.post("/get_form", data=data)
+    response = await ac.post("/get_form", json={"data_form": data})
     data = response.json()
 
     assert response.status_code == 200
-    assert data == {"template_name1": "Order_form_3"}
+    assert data["response"] == {"template_name1": "Order_form_3"}
 
 
 @pytest.mark.asyncio
@@ -125,11 +111,11 @@ async def test_find_all_template(ac: AsyncClient) -> None:
         "email": "some_mail@mail.ru",
     }
 
-    response = await ac.post("/get_form", data=order_form)
+    response = await ac.post("/get_form", json={"data_form": order_form})
     data = response.json()
 
     assert response.status_code == 200
-    assert data == {
+    assert data["response"] == {
         "template_name1": "Order_form_1",
         "template_name2": "Order_form_2",
         "template_name3": "Order_form_3",
